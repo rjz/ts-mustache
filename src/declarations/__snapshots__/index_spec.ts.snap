@@ -1,0 +1,79 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`"end-to-end" tests handles nested properties 1`] = `
+"type MustacheValue = string | number | boolean
+
+type MustacheRecord<T> = T
+
+type MustacheSection<T> = T[] | T
+
+interface Test {
+  foo: MustacheRecord<TestFoo>
+}
+
+interface TestFoo {
+  bar: MustacheValue
+}
+
+export type TemplateMap = {
+  'test': Test,
+}"
+`;
+
+exports[`"end-to-end" tests handles nested properties in sections 1`] = `
+"type MustacheValue = string | number | boolean
+
+type MustacheRecord<T> = T
+
+type MustacheSection<T> = T[] | T
+
+interface Test {
+  foo: MustacheRecord<TestFoo>
+}
+
+interface TestFoo {
+  bar?: MustacheSection<TestFooBar>
+}
+
+interface TestFooBar {
+  pleaseDontButOk: MustacheValue
+}
+
+export type TemplateMap = {
+  'test': Test,
+}"
+`;
+
+exports[`"end-to-end" tests works 1`] = `
+"type MustacheValue = string | number | boolean
+
+type MustacheRecord<T> = T
+
+type MustacheSection<T> = T[] | T
+
+interface _person {
+  name: MustacheValue
+  age: MustacheValue
+}
+
+interface Nametag {
+  person?: MustacheSection<NametagPerson>
+  name: MustacheValue
+}
+
+interface NametagPerson {
+  name: MustacheValue
+  age: MustacheValue
+}
+
+interface Profile {
+  name: MustacheValue
+  age: MustacheValue
+}
+
+export type TemplateMap = {
+  '_person': _person,
+  'nametag': Nametag,
+  'profile': Profile,
+}"
+`;

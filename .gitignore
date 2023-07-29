@@ -1,0 +1,6 @@
+dist/*_spec.*
+dist/**/*_spec.*
+dist/tsconfig.tsbuildinfo
+node_modules
+npm-debug.log
+*.swp
