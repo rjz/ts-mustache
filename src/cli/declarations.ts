@@ -15,7 +15,7 @@ function usage() {
   process.exit(2)
 }
 
-if (args.h || !args.dir || args.o) {
+if (args.h || !args.dir || !args.o) {
   usage()
 }
 
@@ -24,7 +24,7 @@ const declarer = new Declarer(loader)
 
 declarer.declare().then((d) => {
   if (args.o) {
-    fs.promises.writeFile(args.o, d)
+    fs.writeFileSync(args.o, d)
   } else {
     console.log(d)
   }

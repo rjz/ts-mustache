@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -12,14 +13,14 @@ function usage() {
     console.log(`usage: ${process.argv[1]} --dir=<template dir> -o ./templates.ts`);
     process.exit(2);
 }
-if (args.h || !args.dir || args.o) {
+if (args.h || !args.dir || !args.o) {
     usage();
 }
 const loader = new facilities_1.DefaultLoader({ dir: args.dir });
 const declarer = new facilities_1.Declarer(loader);
 declarer.declare().then((d) => {
     if (args.o) {
-        fs_1.default.promises.writeFile(args.o, d);
+        fs_1.default.writeFileSync(args.o, d);
     }
     else {
         console.log(d);
