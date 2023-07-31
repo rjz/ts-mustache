@@ -52,7 +52,7 @@ renderer.render('post', { title: 'Foobar' })
 
 Mustache goes to heroic efforts to resolve and/or handle missing data at
 runtime, recursing through previously-seen context to attempt to fill in
-references with _something_. Further, a template like `{{ x }}` implies that
+references with _something_. Further, a template like `{{ name }}` implies that
 a variable called `name` is expected, but nothing about its type (integer?
 string? vegetable? mineral?) or nullability. Clearly, indeterminate behavior
 makes inference a challenge.
