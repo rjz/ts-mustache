@@ -16,16 +16,16 @@ $ npm test
 ## Usage
 
 ```ts
-import { DefaultLoader, Definer, Renderer } from 'ts-mustache'
+import { DefaultLoader, Declarer, Renderer } from 'ts-mustache'
 
 const loader = new DefaultLoader({
-dir: './templates',
+  dir: './templates',
 })
 
 // Generate typedefs
 const declarer = new Declarer(loader)
 declarer.declare()
-.then(types => fs.writeFileSync('./mustacheTypes.ts', types)
+  .then(types => fs.writeFileSync('./mustacheTypes.ts', types)
 ```
 
 ### CLI
@@ -57,7 +57,7 @@ a variable called `name` is expected, but nothing about its type (integer?
 string? vegetable? mineral?) or nullability. Clearly, indeterminate behavior
 makes inference a challenge.
 
-The `Definer` class in this library attempts an imperfect balancing act between
+The `Declarer` class in this library attempts an imperfect balancing act between
 overly-restrictive and so-broad-as-to-be-functionally-useless type declarations
 based on the [Mustache spec][mustache] and common usage patterns seen in the
 wild.
