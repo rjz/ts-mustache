@@ -135,6 +135,12 @@ describe('Parser', function () {
         person: [{ type: 'RECORD', typeName: 'TemplatePerson' }],
       })
     })
+
+    it('throws before generating type with broken reference', function () {
+      const template = '{{> missing_partial}}'
+      const w = TestWriter.resolve({ template })
+      expect(() => w.toString()).toThrow()
+    })
   })
 
   describe('full tests', function () {
