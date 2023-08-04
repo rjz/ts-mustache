@@ -11,6 +11,12 @@ function joinId(prefix: string, name: string): string {
  * isn't subtle enough to deal with it (at least for now)
  */
 export class Parser extends Graph.DirectedAcyclicGraph<ParserNode> {
+  protected _templates: string[] = []
+
+  get templates(): readonly string[] {
+    return Object.freeze([...this._templates])
+  }
+
   protected ensureChild<T extends ParserNode>(
     parentNode: ParserNode,
     node: T,
@@ -133,5 +139,7 @@ export class Parser extends Graph.DirectedAcyclicGraph<ParserNode> {
     }
 
     this.mergeSpans(root, spans)
+
+    this._templates.push(templateName)
   }
 }

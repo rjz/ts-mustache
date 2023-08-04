@@ -184,10 +184,22 @@ export class Renderer {
   toString(): string {
     const templateMap: Record<string, string> = {}
 
+    const templatesVisited = new Set<string>()
+
     for (const n of this.parsed.nodes()) {
       if (n.type === 'TEMPLATE') {
         this.resolveTemplate(n)
         templateMap[n.id] = this.resolutions.get(n.id)!.typeName
+        templatesVisited.add(n.id)
+      }
+    }
+
+    // Sanity check: ensure that any partials referenced were actually supplied
+    // to the parser and rendered
+    const parsedTemplates = this.parsed.templates
+    for (const t of templatesVisited) {
+      if (!parsedTemplates.includes(t)) {
+        throw new Error(`Unknown template: ${t}`)
       }
     }
 
