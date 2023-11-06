@@ -5,8 +5,6 @@ exports[`Parser full tests handles nested properties 1`] = `
 
 type MustacheRecord<T> = T
 
-type MustacheSection<T> = T[] | T
-
 interface Test {
   foo: MustacheRecord<TestFoo>
 }
@@ -46,8 +44,6 @@ export type TemplateMap = {
 
 exports[`Parser full tests works 1`] = `
 "type MustacheValue = string | number | boolean
-
-type MustacheRecord<T> = T
 
 type MustacheSection<T> = T[] | T
 
