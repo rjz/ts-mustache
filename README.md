@@ -38,14 +38,20 @@ ts-mustache --dir=./templates -o ./templates/types.ts
 
 ### Rendering typed templates
 
-Once types exist, the `Renderer` class provides a convenient way to use them:
+Once types exist in a `TemplateMap`, the `Renderer` class provides a convenient
+way to use them:
 
 ```ts
 import { TemplateMap } from './mustacheTypes'
 
+const loader = new DefaultLoader<TemplateMap>({
+  dir: './templates',
+})
+
 const renderer = new Renderer<TemplateMap>(loader)
 
 renderer.render('post', { title: 'Foobar' })
+  .then(rendered => console.log(rendered))
 ```
 
 ## Philosophy
