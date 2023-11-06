@@ -214,7 +214,6 @@ export class Renderer {
         .map(([k, v]) => `  '${k}': ${v},`)
         .join('\n')}\n}`,
     )
-
     return output.join('\n\n')
   }
 }
