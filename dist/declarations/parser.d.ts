@@ -6,6 +6,8 @@ import { ParserNode, ValueNode } from './types';
  * isn't subtle enough to deal with it (at least for now)
  */
 export declare class Parser extends Graph.DirectedAcyclicGraph<ParserNode> {
+    protected _templates: string[];
+    get templates(): readonly string[];
     protected ensureChild<T extends ParserNode>(parentNode: ParserNode, node: T): T;
     protected ensureValue(parentNode: ParserNode, name: string): ValueNode;
     /**

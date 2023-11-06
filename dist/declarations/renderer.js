@@ -7,7 +7,7 @@ exports.utilityTypes = {
      *  We can't infer type from an untyped template, but we can allow the full
      *  range of valid mustache values
      *
-     *  @todo support function values
+     *  @todo support lambdas (`function` values)
      */
     VALUE: 'type MustacheValue = string | number | boolean',
     /**
@@ -130,10 +130,20 @@ class Renderer {
     }
     toString() {
         const templateMap = {};
+        const templatesVisited = new Set();
         for (const n of this.parsed.nodes()) {
             if (n.type === 'TEMPLATE') {
                 this.resolveTemplate(n);
                 templateMap[n.id] = this.resolutions.get(n.id).typeName;
+                templatesVisited.add(n.id);
+            }
+        }
+        // Sanity check: ensure that any partials referenced were actually supplied
+        // to the parser and rendered
+        const parsedTemplates = this.parsed.templates;
+        for (const t of templatesVisited) {
+            if (!parsedTemplates.includes(t)) {
+                throw new Error(`Unknown template: ${t}`);
             }
         }
         const output = Object.values(exports.utilityTypes);

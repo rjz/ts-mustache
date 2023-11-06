@@ -34,6 +34,13 @@ function joinId(prefix, name) {
  * isn't subtle enough to deal with it (at least for now)
  */
 class Parser extends Graph.DirectedAcyclicGraph {
+    constructor() {
+        super(...arguments);
+        this._templates = [];
+    }
+    get templates() {
+        return Object.freeze([...this._templates]);
+    }
     ensureChild(parentNode, node) {
         const { id } = node;
         if (!this.has(id)) {
@@ -131,6 +138,7 @@ class Parser extends Graph.DirectedAcyclicGraph {
             this.addNode(root);
         }
         this.mergeSpans(root, spans);
+        this._templates.push(templateName);
     }
 }
 exports.Parser = Parser;

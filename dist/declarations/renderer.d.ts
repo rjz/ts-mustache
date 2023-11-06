@@ -5,7 +5,7 @@ export declare const utilityTypes: {
      *  We can't infer type from an untyped template, but we can allow the full
      *  range of valid mustache values
      *
-     *  @todo support function values
+     *  @todo support lambdas (`function` values)
      */
     VALUE: string;
     /**
