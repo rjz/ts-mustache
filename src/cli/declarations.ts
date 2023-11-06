@@ -23,7 +23,7 @@ options:
   process.exit(2)
 }
 
-if (args.h || !args.dir || !args.o) {
+if (args.h || !args.dir) {
   usage()
 }
 
@@ -41,11 +41,11 @@ declarer.declare().then((declarations) => {
 
   const footer = []
 
-  if (args.node && args.o) {
+  if (args.node) {
     header.push("import path from 'path'")
     footer.push(
       `export const TEMPLATE_DIR = path.resolve(__dirname, '${path.relative(
-        path.dirname(args.o),
+        path.dirname(args.o ?? '.'),
         path.resolve(args.dir),
       )}')`,
     )
