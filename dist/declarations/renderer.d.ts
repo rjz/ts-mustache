@@ -38,6 +38,7 @@ export type ResolutionMap = Map<ParserNode['id'], Resolution>;
 export declare class Renderer {
     protected parsed: Parser;
     protected resolutions: ResolutionMap;
+    protected utilityTypesUsed: Set<"VALUE" | "RECORD" | "SECTION">;
     constructor(parsed: Parser);
     protected addCandidate(resolution: Resolution, propertyKey: string, candidate: ResolutionCandidate): void;
     protected resolveNode(id: ParserNode['id'], ns: string, children: Set<ParserNode>): void;

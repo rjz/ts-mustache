@@ -23,6 +23,8 @@ export const utilityTypes = {
   SECTION: 'type MustacheSection<T> = T[] | T',
 }
 
+type UtilityType = keyof typeof utilityTypes
+
 type ResolutionCandidate =
   | { type: 'VALUE' }
   | { type: 'OPTIONAL' }
@@ -46,6 +48,7 @@ function namespaceFor(t: TemplateNode): string {
 
 export class Renderer {
   protected resolutions: ResolutionMap = new Map()
+  protected utilityTypesUsed = new Set<UtilityType>()
 
   constructor(protected parsed: Parser) {}
 
@@ -147,17 +150,21 @@ export class Renderer {
       switch (c.type) {
         case 'RECORD':
           cs.push(`MustacheRecord<${c.typeName}>`)
+          this.utilityTypesUsed.add(c.type)
           break
         case 'SECTION':
           isOptional = true
           cs.push(`MustacheSection<${c.typeName}>`) // | MustacheValue
+          this.utilityTypesUsed.add(c.type)
           break
         case 'VALUE':
           cs.push(`MustacheValue`)
+          this.utilityTypesUsed.add(c.type)
           break
         case 'OPTIONAL':
           isOptional = true
           cs.push(`MustacheValue`)
+          this.utilityTypesUsed.add('VALUE')
           break
         default:
           assertExhaustiveCheck(c)
@@ -203,11 +210,19 @@ export class Renderer {
       }
     }
 
-    const output = Object.values(utilityTypes)
-
+    const output: string[] = []
     for (const r of this.resolutions.values()) {
       output.push(this.resolutionToTypeString(r))
     }
+
+    const utilities: string[] = []
+    for (const [k, v] of Object.entries(utilityTypes)) {
+      if (this.utilityTypesUsed.has(k as UtilityType)) {
+        utilities.push(v)
+      }
+    }
+
+    output.unshift(...utilities)
 
     output.push(
       `export type TemplateMap = {\n${Object.entries(templateMap)

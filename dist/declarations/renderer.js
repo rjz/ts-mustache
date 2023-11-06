@@ -31,6 +31,7 @@ class Renderer {
     constructor(parsed) {
         this.parsed = parsed;
         this.resolutions = new Map();
+        this.utilityTypesUsed = new Set();
     }
     addCandidate(resolution, propertyKey, candidate) {
         if (!resolution.candidates[propertyKey]) {
@@ -103,17 +104,21 @@ class Renderer {
             switch (c.type) {
                 case 'RECORD':
                     cs.push(`MustacheRecord<${c.typeName}>`);
+                    this.utilityTypesUsed.add(c.type);
                     break;
                 case 'SECTION':
                     isOptional = true;
                     cs.push(`MustacheSection<${c.typeName}>`); // | MustacheValue
+                    this.utilityTypesUsed.add(c.type);
                     break;
                 case 'VALUE':
                     cs.push(`MustacheValue`);
+                    this.utilityTypesUsed.add(c.type);
                     break;
                 case 'OPTIONAL':
                     isOptional = true;
                     cs.push(`MustacheValue`);
+                    this.utilityTypesUsed.add('VALUE');
                     break;
                 default:
                     (0, types_1.assertExhaustiveCheck)(c);
@@ -146,10 +151,17 @@ class Renderer {
                 throw new Error(`Unknown template: ${t}`);
             }
         }
-        const output = Object.values(exports.utilityTypes);
+        const output = [];
         for (const r of this.resolutions.values()) {
             output.push(this.resolutionToTypeString(r));
         }
+        const utilities = [];
+        for (const [k, v] of Object.entries(exports.utilityTypes)) {
+            if (this.utilityTypesUsed.has(k)) {
+                utilities.push(v);
+            }
+        }
+        output.unshift(...utilities);
         output.push(`export type TemplateMap = {\n${Object.entries(templateMap)
             .map(([k, v]) => `  '${k}': ${v},`)
             .join('\n')}\n}`);
