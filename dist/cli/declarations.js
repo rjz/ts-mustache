@@ -26,11 +26,8 @@ declarer.declare().then((declarations) => {
 *  @see {@link https://github.com/rjz/ts-mustache/}
 */`;
     const footer = args.o
-        ? `export const TEMPLATE_DIR = '${path_1.default.relative(args.o, args.dir)}'`
+        ? `export const TEMPLATE_DIR = '${path_1.default.relative(path_1.default.dirname(args.o), path_1.default.resolve(args.dir))}'`
         : '';
-    // const relativeDir = 'xyz'
-    //   ,
-    // output.push(`export const TEMPLATE_DIR = '${relativeDir}'`)
     const output = [header, declarations, footer].join('\n\n');
     if (args.o) {
         fs_1.default.writeFileSync(args.o, output);

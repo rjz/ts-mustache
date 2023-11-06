@@ -31,12 +31,11 @@ declarer.declare().then((declarations) => {
 */`
 
   const footer = args.o
-    ? `export const TEMPLATE_DIR = '${path.relative(args.o, args.dir)}'`
+    ? `export const TEMPLATE_DIR = '${path.relative(
+        path.dirname(args.o),
+        path.resolve(args.dir),
+      )}'`
     : ''
-
-  // const relativeDir = 'xyz'
-  //   ,
-  // output.push(`export const TEMPLATE_DIR = '${relativeDir}'`)
 
   const output = [header, declarations, footer].join('\n\n')
 
