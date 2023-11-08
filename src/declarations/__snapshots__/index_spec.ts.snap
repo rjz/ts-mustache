@@ -15,7 +15,11 @@ interface TestFoo {
 
 export type TemplateMap = {
   'test': Test,
-}"
+}
+
+export const TEMPLATES = [
+  'test',
+]"
 `;
 
 exports[`"end-to-end" tests handles nested properties in sections 1`] = `
@@ -39,7 +43,11 @@ interface TestFooBar {
 
 export type TemplateMap = {
   'test': Test,
-}"
+}
+
+export const TEMPLATES = [
+  'test',
+]"
 `;
 
 exports[`"end-to-end" tests works 1`] = `
@@ -71,5 +79,11 @@ export type TemplateMap = {
   '_person': _person,
   'nametag': Nametag,
   'profile': Profile,
-}"
+}
+
+export const TEMPLATES = [
+  '_person',
+  'nametag',
+  'profile',
+]"
 `;
