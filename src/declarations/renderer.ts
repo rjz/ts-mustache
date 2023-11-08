@@ -228,12 +228,12 @@ export class Renderer {
       `export type TemplateMap = {\n${Object.entries(templateMap)
         .map(([k, v]) => `  '${k}': ${v},`)
         .join('\n')}\n}`,
-    )
 
-    output.push(
+      'export type TemplateName = keyof TemplateMap',
+
       `export const TEMPLATES = [\n${Object.keys(templateMap)
         .map((k) => `  '${k}',`)
-        .join('\n')}\n]`,
+        .join('\n')}\n] const`,
     )
 
     return output.join('\n\n')
