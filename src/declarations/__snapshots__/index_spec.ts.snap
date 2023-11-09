@@ -21,7 +21,7 @@ export type TemplateName = keyof TemplateMap
 
 export const TEMPLATES = [
   'test',
-] const"
+] as const"
 `;
 
 exports[`"end-to-end" tests handles nested properties in sections 1`] = `
@@ -51,7 +51,7 @@ export type TemplateName = keyof TemplateMap
 
 export const TEMPLATES = [
   'test',
-] const"
+] as const"
 `;
 
 exports[`"end-to-end" tests works 1`] = `
@@ -91,5 +91,5 @@ export const TEMPLATES = [
   '_person',
   'nametag',
   'profile',
-] const"
+] as const"
 `;

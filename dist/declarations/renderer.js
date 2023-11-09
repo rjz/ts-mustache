@@ -166,7 +166,7 @@ class Renderer {
             .map(([k, v]) => `  '${k}': ${v},`)
             .join('\n')}\n}`, 'export type TemplateName = keyof TemplateMap', `export const TEMPLATES = [\n${Object.keys(templateMap)
             .map((k) => `  '${k}',`)
-            .join('\n')}\n] const`);
+            .join('\n')}\n] as const`);
         return output.join('\n\n');
     }
 }

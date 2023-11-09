@@ -233,7 +233,7 @@ export class Renderer {
 
       `export const TEMPLATES = [\n${Object.keys(templateMap)
         .map((k) => `  '${k}',`)
-        .join('\n')}\n] const`,
+        .join('\n')}\n] as const`,
     )
 
     return output.join('\n\n')
