@@ -15,7 +15,13 @@ interface TestFoo {
 
 export type TemplateMap = {
   'test': Test,
-}"
+}
+
+export type TemplateName = keyof TemplateMap
+
+export const TEMPLATES = [
+  'test',
+] as const"
 `;
 
 exports[`Parser full tests handles nested properties in sections 1`] = `
@@ -39,7 +45,13 @@ interface TestFooBar {
 
 export type TemplateMap = {
   'test': Test,
-}"
+}
+
+export type TemplateName = keyof TemplateMap
+
+export const TEMPLATES = [
+  'test',
+] as const"
 `;
 
 exports[`Parser full tests works 1`] = `
@@ -71,5 +83,13 @@ export type TemplateMap = {
   '_person': _person,
   'nametag': Nametag,
   'profile': Profile,
-}"
+}
+
+export type TemplateName = keyof TemplateMap
+
+export const TEMPLATES = [
+  '_person',
+  'nametag',
+  'profile',
+] as const"
 `;
