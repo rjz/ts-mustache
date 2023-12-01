@@ -30,6 +30,19 @@ if (args.h || !args.dir) {
 const loader = new DefaultLoader({ dir: args.dir })
 const declarer = new Declarer(loader)
 
+function stripHeader(content: string) {
+  return content.substring(content.indexOf('*/\n') + 3)
+}
+
+function hasDeclarationChanged(filename: string, declarations: string): boolean {
+  let existing = ''
+  try {
+    existing = fs.readFileSync(filename, 'utf8')
+  } catch (e) {}
+
+  return stripHeader(declarations) !== stripHeader(existing)
+}
+
 declarer.declare().then((declarations) => {
   const header = [
     `/**
@@ -56,7 +69,9 @@ declarer.declare().then((declarations) => {
     .join('\n\n')
 
   if (args.o) {
-    fs.writeFileSync(args.o, output)
+    if (hasDeclarationChanged(args.o, output)) {
+      fs.writeFileSync(args.o, output, 'utf8')
+    }
   } else {
     console.log(output)
   }
