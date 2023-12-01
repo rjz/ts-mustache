@@ -26,6 +26,17 @@ if (args.h || !args.dir) {
 }
 const loader = new facilities_1.DefaultLoader({ dir: args.dir });
 const declarer = new facilities_1.Declarer(loader);
+function stripHeader(content) {
+    return content.substring(content.indexOf('*/\n') + 3);
+}
+function hasDeclarationChanged(filename, declarations) {
+    let existing = '';
+    try {
+        existing = fs_1.default.readFileSync(filename, 'utf8');
+    }
+    catch (e) { }
+    return stripHeader(declarations) !== stripHeader(existing);
+}
 declarer.declare().then((declarations) => {
     var _a;
     const header = [
@@ -44,7 +55,9 @@ declarer.declare().then((declarations) => {
         .filter(Boolean)
         .join('\n\n');
     if (args.o) {
-        fs_1.default.writeFileSync(args.o, output);
+        if (hasDeclarationChanged(args.o, output)) {
+            fs_1.default.writeFileSync(args.o, output, 'utf8');
+        }
     }
     else {
         console.log(output);
