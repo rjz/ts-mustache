@@ -61,8 +61,8 @@ class Parser extends Graph.DirectedAcyclicGraph {
      * @todo handle lambdas
      */
     mergeValue(parentNode, fullName) {
-        if (fullName === '.') {
-            // Nothing to see but a little self-reference...
+        if (fullName === '.' && parentNode.type === 'SECTION') {
+            this.ensureValue(parentNode, '.');
             return;
         }
         const [name, ...parts] = fullName.split('.');

@@ -54,6 +54,51 @@ export const TEMPLATES = [
 ] as const"
 `;
 
+exports[`"end-to-end" tests self references also handles when a self-reference has a sibling property 1`] = `
+"type MustacheValue = string | number | boolean
+
+type MustacheSection<T> = T[] | T
+
+interface Test {
+  items?: MustacheSection<TestItems>
+}
+
+interface TestItems {
+  length: MustacheValue
+  // self-reference \`{{.}}\` intentionally left blank
+}
+
+export type TemplateMap = {
+  'test': Test,
+}
+
+export type TemplateName = keyof TemplateMap
+
+export const TEMPLATES = [
+  'test',
+] as const"
+`;
+
+exports[`"end-to-end" tests self references special-cases when an item is _only_ self-referential 1`] = `
+"type MustacheSection<T> = T[] | T
+
+interface Test {
+  items?: MustacheSection<TestItems>
+}
+
+type TestItems = MustacheValue
+
+export type TemplateMap = {
+  'test': Test,
+}
+
+export type TemplateName = keyof TemplateMap
+
+export const TEMPLATES = [
+  'test',
+] as const"
+`;
+
 exports[`"end-to-end" tests works 1`] = `
 "type MustacheValue = string | number | boolean
 

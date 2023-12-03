@@ -48,4 +48,29 @@ describe('"end-to-end" tests', function () {
 
     expect(actual).toMatchSnapshot()
   })
+
+  describe('self references', function () {
+    it('special-cases when an item is _only_ self-referential', function () {
+      const p = new Parser()
+      p.addTemplate('test', mustache.parse(`{{#items}}{{{.}}}{{/items}}`))
+
+      const t = new Renderer(p)
+      const actual = t.toString()
+
+      expect(actual).toMatchSnapshot()
+    })
+
+    it('also handles when a self-reference has a sibling property', function () {
+      const p = new Parser()
+      p.addTemplate(
+        'test',
+        mustache.parse(`{{#items}}{{length}}{{{.}}}{{/items}}`),
+      )
+
+      const t = new Renderer(p)
+      const actual = t.toString()
+
+      expect(actual).toMatchSnapshot()
+    })
+  })
 })

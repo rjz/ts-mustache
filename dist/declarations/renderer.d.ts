@@ -29,6 +29,9 @@ type ResolutionCandidate = {
 } | {
     type: 'SECTION';
     typeName: string;
+} | {
+    type: 'SELF';
+    typeName: string;
 };
 export type Resolution = {
     typeName: string;
