@@ -44,8 +44,8 @@ export class Parser extends Graph.DirectedAcyclicGraph<ParserNode> {
    * @todo handle lambdas
    */
   protected mergeValue(parentNode: ParserNode, fullName: string): void {
-    if (fullName === '.') {
-      // Nothing to see but a little self-reference...
+    if (fullName === '.' && parentNode.type === 'SECTION') {
+      this.ensureValue(parentNode, '.')
       return
     }
 

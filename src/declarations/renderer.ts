@@ -30,6 +30,7 @@ type ResolutionCandidate =
   | { type: 'OPTIONAL' }
   | { type: 'RECORD'; typeName: string }
   | { type: 'SECTION'; typeName: string }
+  | { type: 'SELF'; typeName: string }
 
 export type Resolution = {
   typeName: string
@@ -105,7 +106,14 @@ export class Renderer {
         case 'VALUE': {
           const edges = this.parsed.edgesFrom(c.id)
           if (edges.size === 0) {
-            this.addCandidate(resolution, c.propertyKey, { type: 'VALUE' })
+            if (c.propertyKey === '.') {
+              this.addCandidate(resolution, c.propertyKey, {
+                type: 'SELF',
+                typeName: c.id,
+              })
+            } else {
+              this.addCandidate(resolution, c.propertyKey, { type: 'VALUE' })
+            }
           } else {
             this.resolveNode(
               c.id,
@@ -161,6 +169,9 @@ export class Renderer {
           cs.push(`MustacheValue`)
           this.utilityTypesUsed.add(c.type)
           break
+        case 'SELF':
+          return '  // self-reference ({{.}}) intentionally left blank'
+          break
         case 'OPTIONAL':
           isOptional = true
           cs.push(`MustacheValue`)
@@ -178,12 +189,20 @@ export class Renderer {
 
   protected resolutionToTypeString(r: Resolution): string {
     const entries = Object.entries(r.candidates)
-    const propStr =
-      entries.length === 0
-        ? ''
-        : ['', ...entries.map(([k, p]) => this.propertyString(k, p)), ''].join(
-            '\n',
-          )
+
+    let propStr = ''
+
+    if (entries.length > 0) {
+      if (entries.every(([k, ps]) => ps.every((p) => p.type === 'SELF'))) {
+        return `type ${r.typeName} = MustacheValue`
+      }
+
+      propStr = [
+        '',
+        ...entries.map(([k, p]) => this.propertyString(k, p)),
+        '',
+      ].join('\n')
+    }
 
     return `interface ${r.typeName} {${propStr}}`
   }
