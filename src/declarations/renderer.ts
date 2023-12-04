@@ -2,13 +2,35 @@ import { ParserNode, TemplateNode, assertExhaustiveCheck } from './types'
 import { Parser } from './parser'
 
 export const utilityTypes = {
+  TEMPLATE: `/**
+ * Placeholder for (not-yet-interpolated) content supplied or returned by
+ * lambda functions.
+ *
+ * Note that because interpolation/transformation can take place outside the
+ * template (see notes for {@link @MustacheSectionLambda}) the content and its
+ * types can't be reliably inferred by the type system.
+ */
+type MustacheTemplate = string`,
+
+  SECTION_LAMBDA: `/**
+ * Placeholder for evaluating a lambda invoked as a Section value.
+ *
+ * Be careful with these: a permissive type reflects both an unknown
+ * transformation inside the lambda and an easily-overlooked escape hatch from
+ * the template's generated types.
+ *
+ *  @see {@link https://github.com/mustache/spec/blob/master/specs/~lambdas.yml}
+ */
+interface MustacheSectionLambda {
+  (content: MustacheTemplate) => MustacheTemplate
+}`,
+
   /**
    *  We can't infer type from an untyped template, but we can allow the full
    *  range of valid mustache values
-   *
-   *  @todo support lambdas (`function` values)
    */
-  VALUE: 'type MustacheValue = string | number | boolean',
+  VALUE:
+    'type MustacheValue = string | number | boolean | () => MustacheTemplate',
 
   /**
    *  Properties in a `RECORD` may be nullable but the record itself must be
@@ -20,7 +42,7 @@ export const utilityTypes = {
    *  A `SECTION` (inverted or otherwise)'s properties are nullable and may or
    *  may not be list types
    */
-  SECTION: 'type MustacheSection<T> = T[] | T',
+  SECTION: 'type MustacheSection<T> = T[] | T | MustacheSectionLambda',
 }
 
 type UtilityType = keyof typeof utilityTypes
@@ -163,6 +185,8 @@ export class Renderer {
         case 'SECTION':
           isOptional = true
           cs.push(`MustacheSection<${c.typeName}>`) // | MustacheValue
+          this.utilityTypesUsed.add('TEMPLATE')
+          this.utilityTypesUsed.add('SECTION_LAMBDA')
           this.utilityTypesUsed.add(c.type)
           break
         case 'VALUE':

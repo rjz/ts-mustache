@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`"end-to-end" tests handles nested properties 1`] = `
-"type MustacheValue = string | number | boolean
+"type MustacheValue = string | number | boolean | () => MustacheTemplate
 
 type MustacheRecord<T> = T
 
@@ -25,11 +25,34 @@ export const TEMPLATES = [
 `;
 
 exports[`"end-to-end" tests handles nested properties in sections 1`] = `
-"type MustacheValue = string | number | boolean
+"/**
+ * Placeholder for (not-yet-interpolated) content supplied or returned by
+ * lambda functions.
+ *
+ * Note that because interpolation/transformation can take place outside the
+ * template (see notes for {@link @MustacheSectionLambda}) the content and its
+ * types can't be reliably inferred by the type system.
+ */
+type MustacheTemplate = string
+
+/**
+ * Placeholder for evaluating a lambda invoked as a Section value.
+ *
+ * Be careful with these: a permissive type reflects both an unknown
+ * transformation inside the lambda and an easily-overlooked escape hatch from
+ * the template's generated types.
+ *
+ *  @see {@link https://github.com/mustache/spec/blob/master/specs/~lambdas.yml}
+ */
+interface MustacheSectionLambda {
+  (content: MustacheTemplate) => MustacheTemplate
+}
+
+type MustacheValue = string | number | boolean | () => MustacheTemplate
 
 type MustacheRecord<T> = T
 
-type MustacheSection<T> = T[] | T
+type MustacheSection<T> = T[] | T | MustacheSectionLambda
 
 interface Test {
   foo: MustacheRecord<TestFoo>
@@ -55,9 +78,32 @@ export const TEMPLATES = [
 `;
 
 exports[`"end-to-end" tests self references also handles when a self-reference has a sibling property 1`] = `
-"type MustacheValue = string | number | boolean
+"/**
+ * Placeholder for (not-yet-interpolated) content supplied or returned by
+ * lambda functions.
+ *
+ * Note that because interpolation/transformation can take place outside the
+ * template (see notes for {@link @MustacheSectionLambda}) the content and its
+ * types can't be reliably inferred by the type system.
+ */
+type MustacheTemplate = string
 
-type MustacheSection<T> = T[] | T
+/**
+ * Placeholder for evaluating a lambda invoked as a Section value.
+ *
+ * Be careful with these: a permissive type reflects both an unknown
+ * transformation inside the lambda and an easily-overlooked escape hatch from
+ * the template's generated types.
+ *
+ *  @see {@link https://github.com/mustache/spec/blob/master/specs/~lambdas.yml}
+ */
+interface MustacheSectionLambda {
+  (content: MustacheTemplate) => MustacheTemplate
+}
+
+type MustacheValue = string | number | boolean | () => MustacheTemplate
+
+type MustacheSection<T> = T[] | T | MustacheSectionLambda
 
 interface Test {
   items?: MustacheSection<TestItems>
@@ -80,7 +126,30 @@ export const TEMPLATES = [
 `;
 
 exports[`"end-to-end" tests self references special-cases when an item is _only_ self-referential 1`] = `
-"type MustacheSection<T> = T[] | T
+"/**
+ * Placeholder for (not-yet-interpolated) content supplied or returned by
+ * lambda functions.
+ *
+ * Note that because interpolation/transformation can take place outside the
+ * template (see notes for {@link @MustacheSectionLambda}) the content and its
+ * types can't be reliably inferred by the type system.
+ */
+type MustacheTemplate = string
+
+/**
+ * Placeholder for evaluating a lambda invoked as a Section value.
+ *
+ * Be careful with these: a permissive type reflects both an unknown
+ * transformation inside the lambda and an easily-overlooked escape hatch from
+ * the template's generated types.
+ *
+ *  @see {@link https://github.com/mustache/spec/blob/master/specs/~lambdas.yml}
+ */
+interface MustacheSectionLambda {
+  (content: MustacheTemplate) => MustacheTemplate
+}
+
+type MustacheSection<T> = T[] | T | MustacheSectionLambda
 
 interface Test {
   items?: MustacheSection<TestItems>
@@ -100,9 +169,32 @@ export const TEMPLATES = [
 `;
 
 exports[`"end-to-end" tests works 1`] = `
-"type MustacheValue = string | number | boolean
+"/**
+ * Placeholder for (not-yet-interpolated) content supplied or returned by
+ * lambda functions.
+ *
+ * Note that because interpolation/transformation can take place outside the
+ * template (see notes for {@link @MustacheSectionLambda}) the content and its
+ * types can't be reliably inferred by the type system.
+ */
+type MustacheTemplate = string
 
-type MustacheSection<T> = T[] | T
+/**
+ * Placeholder for evaluating a lambda invoked as a Section value.
+ *
+ * Be careful with these: a permissive type reflects both an unknown
+ * transformation inside the lambda and an easily-overlooked escape hatch from
+ * the template's generated types.
+ *
+ *  @see {@link https://github.com/mustache/spec/blob/master/specs/~lambdas.yml}
+ */
+interface MustacheSectionLambda {
+  (content: MustacheTemplate) => MustacheTemplate
+}
+
+type MustacheValue = string | number | boolean | () => MustacheTemplate
+
+type MustacheSection<T> = T[] | T | MustacheSectionLambda
 
 interface _person {
   name: MustacheValue
