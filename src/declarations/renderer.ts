@@ -170,7 +170,7 @@ export class Renderer {
           this.utilityTypesUsed.add(c.type)
           break
         case 'SELF':
-          return '  // self-reference `{{.}}` intentionally left blank'
+          return '  // self-reference ({{.}}) intentionally left blank'
           break
         case 'OPTIONAL':
           isOptional = true

@@ -65,7 +65,7 @@ interface Test {
 
 interface TestItems {
   length: MustacheValue
-  // self-reference \`{{.}}\` intentionally left blank
+  // self-reference ({{.}}) intentionally left blank
 }
 
 export type TemplateMap = {
