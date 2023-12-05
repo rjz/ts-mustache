@@ -77,15 +77,14 @@ describe('"end-to-end" tests', function () {
   describe('lambdas', function () {
     it('allows lambdas in values', function () {
       const p = new Parser()
-      p.addTemplate(
-        'test',
-        mustache.parse('{{any}}'),
-      )
+      p.addTemplate('test', mustache.parse('{{any}}'))
 
       const t = new Renderer(p)
       const actual = t.toString()
 
-      expect(actual).toMatch(/type MustacheValue =.*\| \(\) => MustacheTemplate/)
+      expect(actual).toMatch(
+        /type MustacheValue =.*\| \(\(\) => MustacheTemplate\)/,
+      )
     })
 
     it('supports lambdas in sections', function () {

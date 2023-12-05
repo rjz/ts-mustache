@@ -3,13 +3,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Renderer = exports.utilityTypes = void 0;
 const types_1 = require("./types");
 exports.utilityTypes = {
+    TEMPLATE: `/**
+ * Placeholder for (not-yet-interpolated) content supplied or returned by
+ * lambda functions.
+ *
+ * Note that because interpolation/transformation can take place outside the
+ * template (see notes for {@link @MustacheSectionLambda}) the content and its
+ * types can't be reliably inferred by the type system.
+ */
+type MustacheTemplate = string`,
     /**
      *  We can't infer type from an untyped template, but we can allow the full
      *  range of valid mustache values
-     *
-     *  @todo support lambdas (`function` values)
      */
-    VALUE: 'type MustacheValue = string | number | boolean',
+    VALUE: 'type MustacheValue = string | number | boolean | (() => MustacheTemplate)',
     /**
      *  Properties in a `RECORD` may be nullable but the record itself must be
      *  passed to the template
@@ -19,7 +26,20 @@ exports.utilityTypes = {
      *  A `SECTION` (inverted or otherwise)'s properties are nullable and may or
      *  may not be list types
      */
-    SECTION: 'type MustacheSection<T> = T[] | T',
+    SECTION: `/**
+ * Placeholder for evaluating a lambda invoked as a Section value.
+ *
+ * Be careful with these: a permissive type reflects both an unknown
+ * transformation inside the lambda and an easily-overlooked escape hatch from
+ * the template's generated types.
+ *
+ *  @see {@link https://github.com/mustache/spec/blob/master/specs/~lambdas.yml}
+ */
+interface MustacheSectionLambda {
+  (content: MustacheTemplate): MustacheTemplate
+}
+
+type MustacheSection<T> = T[] | T | MustacheSectionLambda`,
 };
 function upperFirst(str) {
     return str[0].toUpperCase() + str.slice(1);
@@ -117,11 +137,13 @@ class Renderer {
                 case 'SECTION':
                     isOptional = true;
                     cs.push(`MustacheSection<${c.typeName}>`); // | MustacheValue
-                    this.utilityTypesUsed.add(c.type);
+                    this.utilityTypesUsed.add('TEMPLATE');
+                    this.utilityTypesUsed.add('SECTION');
                     break;
                 case 'VALUE':
                     cs.push(`MustacheValue`);
-                    this.utilityTypesUsed.add(c.type);
+                    this.utilityTypesUsed.add('TEMPLATE');
+                    this.utilityTypesUsed.add('VALUE');
                     break;
                 case 'SELF':
                     return '  // self-reference ({{.}}) intentionally left blank';
@@ -129,6 +151,7 @@ class Renderer {
                 case 'OPTIONAL':
                     isOptional = true;
                     cs.push(`MustacheValue`);
+                    this.utilityTypesUsed.add('TEMPLATE');
                     this.utilityTypesUsed.add('VALUE');
                     break;
                 default:
