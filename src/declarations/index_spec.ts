@@ -83,7 +83,7 @@ describe('"end-to-end" tests', function () {
       const actual = t.toString()
 
       expect(actual).toMatch(
-        /type MustacheValue =.*\| \(\(\) => MustacheTemplate\)/,
+        /type MustacheValue =.*\| \(\(\) => MustacheValue\)/,
       )
     })
 

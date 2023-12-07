@@ -1,7 +1,6 @@
 import { ParserNode, TemplateNode } from './types';
 import { Parser } from './parser';
 export declare const utilityTypes: {
-    TEMPLATE: string;
     /**
      *  We can't infer type from an untyped template, but we can allow the full
      *  range of valid mustache values
@@ -14,7 +13,14 @@ export declare const utilityTypes: {
     RECORD: string;
     /**
      *  A `SECTION` (inverted or otherwise)'s properties are nullable and may or
-     *  may not be list types
+     *  may not be list types.
+     *
+     *  Note that mustache.js@4.2.0 (current at time of writing) does _not_
+     *  implement the (optional) extension enabling section lambdas to obtain and
+     *  transform the template content of the enclosed section. If subsequent
+     *  versions add support, a more permissive type would be appropriate here.
+     *
+     *  @see {@link https://github.com/rjz/ts-mustache/issues/8}
      */
     SECTION: string;
 };
@@ -40,7 +46,7 @@ export type ResolutionMap = Map<ParserNode['id'], Resolution>;
 export declare class Renderer {
     protected parsed: Parser;
     protected resolutions: ResolutionMap;
-    protected utilityTypesUsed: Set<"VALUE" | "RECORD" | "SECTION" | "TEMPLATE">;
+    protected utilityTypesUsed: Set<"VALUE" | "RECORD" | "SECTION">;
     constructor(parsed: Parser);
     protected addCandidate(resolution: Resolution, propertyKey: string, candidate: ResolutionCandidate): void;
     protected resolveNode(id: ParserNode['id'], ns: string, children: Set<ParserNode>): void;

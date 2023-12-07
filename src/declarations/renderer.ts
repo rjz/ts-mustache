@@ -2,22 +2,12 @@ import { ParserNode, TemplateNode, assertExhaustiveCheck } from './types'
 import { Parser } from './parser'
 
 export const utilityTypes = {
-  TEMPLATE: `/**
- * Placeholder for (not-yet-interpolated) content supplied or returned by
- * lambda functions.
- *
- * Note that because interpolation/transformation can take place outside the
- * template (see notes for {@link @MustacheSectionLambda}) the content and its
- * types can't be reliably inferred by the type system.
- */
-type MustacheTemplate = string`,
-
   /**
    *  We can't infer type from an untyped template, but we can allow the full
    *  range of valid mustache values
    */
   VALUE:
-    'type MustacheValue = string | number | boolean | (() => MustacheTemplate)',
+    'type MustacheValue = string | number | boolean | (() => MustacheValue)',
 
   /**
    *  Properties in a `RECORD` may be nullable but the record itself must be
@@ -27,19 +17,22 @@ type MustacheTemplate = string`,
 
   /**
    *  A `SECTION` (inverted or otherwise)'s properties are nullable and may or
-   *  may not be list types
+   *  may not be list types.
+   *
+   *  Note that mustache.js@4.2.0 (current at time of writing) does _not_
+   *  implement the (optional) extension enabling section lambdas to obtain and
+   *  transform the template content of the enclosed section. If subsequent
+   *  versions add support, a more permissive type would be appropriate here.
+   *
+   *  @see {@link https://github.com/rjz/ts-mustache/issues/8}
    */
   SECTION: `/**
- * Placeholder for evaluating a lambda invoked as a Section value.
- *
- * Be careful with these: a permissive type reflects both an unknown
- * transformation inside the lambda and an easily-overlooked escape hatch from
- * the template's generated types.
+ *  Placeholder for evaluating a lambda invoked as a Section value.
  *
  *  @see {@link https://github.com/mustache/spec/blob/master/specs/~lambdas.yml}
  */
 interface MustacheSectionLambda {
-  (content: MustacheTemplate): MustacheTemplate
+  (): MustacheValue
 }
 
 type MustacheSection<T> = T[] | T | MustacheSectionLambda`,
@@ -185,12 +178,10 @@ export class Renderer {
         case 'SECTION':
           isOptional = true
           cs.push(`MustacheSection<${c.typeName}>`) // | MustacheValue
-          this.utilityTypesUsed.add('TEMPLATE')
           this.utilityTypesUsed.add('SECTION')
           break
         case 'VALUE':
           cs.push(`MustacheValue`)
-          this.utilityTypesUsed.add('TEMPLATE')
           this.utilityTypesUsed.add('VALUE')
           break
         case 'SELF':
@@ -199,7 +190,6 @@ export class Renderer {
         case 'OPTIONAL':
           isOptional = true
           cs.push(`MustacheValue`)
-          this.utilityTypesUsed.add('TEMPLATE')
           this.utilityTypesUsed.add('VALUE')
           break
         default:
