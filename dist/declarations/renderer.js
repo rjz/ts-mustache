@@ -2,6 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Renderer = exports.utilityTypes = void 0;
 const types_1 = require("./types");
+/**
+ *  Types referenced in generated type definitions.
+ */
 exports.utilityTypes = {
     /**
      *  We can't infer type from an untyped template, but we can allow the full
@@ -14,26 +17,31 @@ exports.utilityTypes = {
      */
     RECORD: 'type MustacheRecord<T> = T',
     /**
-     *  A `SECTION` (inverted or otherwise)'s properties are nullable and may or
-     *  may not be list types.
-     *
-     *  Note that mustache.js@4.2.0 (current at time of writing) does _not_
-     *  implement the (optional) extension enabling section lambdas to obtain and
-     *  transform the template content of the enclosed section. If subsequent
-     *  versions add support, a more permissive type would be appropriate here.
-     *
-     *  @see {@link https://github.com/rjz/ts-mustache/issues/8}
+     *  @todo type the `render()` method in terms of the section type `T`
      */
-    SECTION: `/**
+    SECTION_LAMBDA: `/**
  *  Placeholder for evaluating a lambda invoked as a Section value.
  *
  *  @see {@link https://github.com/mustache/spec/blob/master/specs/~lambdas.yml}
  */
-interface MustacheSectionLambda {
-  (): MustacheValue
-}
-
-type MustacheSection<T> = T[] | T | MustacheSectionLambda`,
+interface MustacheSectionLambda<T> {
+  (template: string, render: (...args: any[]) => string): string
+}`,
+    SECTION_OPTIONAL: 'type MustacheSectionOptional = MustacheValue | MustacheSectionLambda<any>',
+    /**
+     *  A `SECTION` (inverted or otherwise)'s properties are nullable and may or
+     *  may not be list types.
+     *
+     *  Note that mustache.js@4.2.0 (current at time of writing) deviates from
+     *  the official spec in that lambdas must _return_ a rendering function
+     *  (i.e., they will be first invoked as an "empty" lambda supplied as a
+     *  `MustacheValue`) rather than implementing it themselves directly.
+     *
+     *  @see {@link https://github.com/rjz/ts-mustache/issues/8}
+     *  @see {@link https://github.com/janl/mustache.js?tab=readme-ov-file#functions}
+     *  @see {@link https://github.com/mustache/spec/blob/master/specs/~lambdas.yml}
+     */
+    SECTION: `type MustacheSection<T> = T[] | T | () => MustacheSectionLambda<T>`,
 };
 function upperFirst(str) {
     return str[0].toUpperCase() + str.slice(1);
@@ -131,6 +139,7 @@ class Renderer {
                 case 'SECTION':
                     isOptional = true;
                     cs.push(`MustacheSection<${c.typeName}>`); // | MustacheValue
+                    this.utilityTypesUsed.add('SECTION_LAMBDA');
                     this.utilityTypesUsed.add('SECTION');
                     break;
                 case 'VALUE':
@@ -142,8 +151,10 @@ class Renderer {
                     break;
                 case 'OPTIONAL':
                     isOptional = true;
-                    cs.push(`MustacheValue`);
+                    cs.push(`MustacheSectionOptional`);
                     this.utilityTypesUsed.add('VALUE');
+                    this.utilityTypesUsed.add('SECTION_LAMBDA');
+                    this.utilityTypesUsed.add('SECTION_OPTIONAL');
                     break;
                 default:
                     (0, types_1.assertExhaustiveCheck)(c);

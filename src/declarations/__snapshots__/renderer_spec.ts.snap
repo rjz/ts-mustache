@@ -34,11 +34,11 @@ type MustacheRecord<T> = T
  *
  *  @see {@link https://github.com/mustache/spec/blob/master/specs/~lambdas.yml}
  */
-interface MustacheSectionLambda {
-  (): MustacheValue
+interface MustacheSectionLambda<T> {
+  (template: string, render: (...args: any[]) => string): string
 }
 
-type MustacheSection<T> = T[] | T | MustacheSectionLambda
+type MustacheSection<T> = T[] | T | () => MustacheSectionLambda<T>
 
 interface Test {
   foo: MustacheRecord<TestFoo>
@@ -71,11 +71,11 @@ exports[`Parser full tests works 1`] = `
  *
  *  @see {@link https://github.com/mustache/spec/blob/master/specs/~lambdas.yml}
  */
-interface MustacheSectionLambda {
-  (): MustacheValue
+interface MustacheSectionLambda<T> {
+  (template: string, render: (...args: any[]) => string): string
 }
 
-type MustacheSection<T> = T[] | T | MustacheSectionLambda
+type MustacheSection<T> = T[] | T | () => MustacheSectionLambda<T>
 
 interface _person {
   name: MustacheValue

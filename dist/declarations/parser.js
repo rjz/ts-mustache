@@ -58,7 +58,6 @@ class Parser extends Graph.DirectedAcyclicGraph {
     }
     /**
      * @todo handle bracket notation (`foo['bar']`) as well?
-     * @todo handle lambdas
      */
     mergeValue(parentNode, fullName) {
         if (fullName === '.' && parentNode.type === 'SECTION') {

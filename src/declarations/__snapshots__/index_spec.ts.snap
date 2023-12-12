@@ -34,11 +34,11 @@ type MustacheRecord<T> = T
  *
  *  @see {@link https://github.com/mustache/spec/blob/master/specs/~lambdas.yml}
  */
-interface MustacheSectionLambda {
-  (): MustacheValue
+interface MustacheSectionLambda<T> {
+  (template: string, render: (...args: any[]) => string): string
 }
 
-type MustacheSection<T> = T[] | T | MustacheSectionLambda
+type MustacheSection<T> = T[] | T | () => MustacheSectionLambda<T>
 
 interface Test {
   foo: MustacheRecord<TestFoo>
@@ -71,11 +71,11 @@ exports[`"end-to-end" tests self references also handles when a self-reference h
  *
  *  @see {@link https://github.com/mustache/spec/blob/master/specs/~lambdas.yml}
  */
-interface MustacheSectionLambda {
-  (): MustacheValue
+interface MustacheSectionLambda<T> {
+  (template: string, render: (...args: any[]) => string): string
 }
 
-type MustacheSection<T> = T[] | T | MustacheSectionLambda
+type MustacheSection<T> = T[] | T | () => MustacheSectionLambda<T>
 
 interface Test {
   items?: MustacheSection<TestItems>
@@ -103,11 +103,11 @@ exports[`"end-to-end" tests self references special-cases when an item is _only_
  *
  *  @see {@link https://github.com/mustache/spec/blob/master/specs/~lambdas.yml}
  */
-interface MustacheSectionLambda {
-  (): MustacheValue
+interface MustacheSectionLambda<T> {
+  (template: string, render: (...args: any[]) => string): string
 }
 
-type MustacheSection<T> = T[] | T | MustacheSectionLambda
+type MustacheSection<T> = T[] | T | () => MustacheSectionLambda<T>
 
 interface Test {
   items?: MustacheSection<TestItems>
@@ -134,11 +134,11 @@ exports[`"end-to-end" tests works 1`] = `
  *
  *  @see {@link https://github.com/mustache/spec/blob/master/specs/~lambdas.yml}
  */
-interface MustacheSectionLambda {
-  (): MustacheValue
+interface MustacheSectionLambda<T> {
+  (template: string, render: (...args: any[]) => string): string
 }
 
-type MustacheSection<T> = T[] | T | MustacheSectionLambda
+type MustacheSection<T> = T[] | T | () => MustacheSectionLambda<T>
 
 interface _person {
   name: MustacheValue
