@@ -27,7 +27,7 @@ exports.utilityTypes = {
 interface MustacheSectionLambda<T> {
   (template: string, render: (...args: any[]) => string): string
 }`,
-    SECTION_OPTIONAL: 'type MustacheSectionOptional = MustacheValue | MustacheSectionLambda<any>',
+    SECTION_OPTIONAL: 'type MustacheSectionOptional = MustacheValue | (() => MustacheSectionLambda<any>)',
     /**
      *  A `SECTION` (inverted or otherwise)'s properties are nullable and may or
      *  may not be list types.
@@ -41,7 +41,7 @@ interface MustacheSectionLambda<T> {
      *  @see {@link https://github.com/janl/mustache.js?tab=readme-ov-file#functions}
      *  @see {@link https://github.com/mustache/spec/blob/master/specs/~lambdas.yml}
      */
-    SECTION: `type MustacheSection<T> = T[] | T | () => MustacheSectionLambda<T>`,
+    SECTION: `type MustacheSection<T> = T[] | T | (() => MustacheSectionLambda<T>)`,
 };
 function upperFirst(str) {
     return str[0].toUpperCase() + str.slice(1);

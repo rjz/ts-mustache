@@ -38,7 +38,7 @@ interface MustacheSectionLambda<T> {
   (template: string, render: (...args: any[]) => string): string
 }
 
-type MustacheSection<T> = T[] | T | () => MustacheSectionLambda<T>
+type MustacheSection<T> = T[] | T | (() => MustacheSectionLambda<T>)
 
 interface Test {
   foo: MustacheRecord<TestFoo>
@@ -75,7 +75,7 @@ interface MustacheSectionLambda<T> {
   (template: string, render: (...args: any[]) => string): string
 }
 
-type MustacheSection<T> = T[] | T | () => MustacheSectionLambda<T>
+type MustacheSection<T> = T[] | T | (() => MustacheSectionLambda<T>)
 
 interface _person {
   name: MustacheValue

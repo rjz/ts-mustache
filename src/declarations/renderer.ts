@@ -31,7 +31,7 @@ interface MustacheSectionLambda<T> {
 }`,
 
   SECTION_OPTIONAL:
-    'type MustacheSectionOptional = MustacheValue | MustacheSectionLambda<any>',
+    'type MustacheSectionOptional = MustacheValue | (() => MustacheSectionLambda<any>)',
 
   /**
    *  A `SECTION` (inverted or otherwise)'s properties are nullable and may or
@@ -46,7 +46,7 @@ interface MustacheSectionLambda<T> {
    *  @see {@link https://github.com/janl/mustache.js?tab=readme-ov-file#functions}
    *  @see {@link https://github.com/mustache/spec/blob/master/specs/~lambdas.yml}
    */
-  SECTION: `type MustacheSection<T> = T[] | T | () => MustacheSectionLambda<T>`,
+  SECTION: `type MustacheSection<T> = T[] | T | (() => MustacheSectionLambda<T>)`,
 }
 
 type UtilityType = keyof typeof utilityTypes
