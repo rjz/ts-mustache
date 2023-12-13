@@ -37,10 +37,11 @@ interface MustacheSectionLambda<T> {
    *  A `SECTION` (inverted or otherwise)'s properties are nullable and may or
    *  may not be list types.
    *
-   *  Note that mustache.js@4.2.0 (current at time of writing) deviates from
-   *  the official spec in that lambdas must _return_ a rendering function
-   *  (i.e., they will be first invoked as an "empty" lambda supplied as a
-   *  `MustacheValue`) rather than implementing it themselves directly.
+   *  Note that mustache.js@4.2.0 (the current version at time of writing)
+   *  interprets the official spec to require lambdas used as section arguments
+   *  to _return_ a rendering function (i.e., they will be first invoked as an
+   *  "empty" lambda, ala a `MustacheValue`) rather than implementing it
+   *  themselves directly.
    *
    *  @see {@link https://github.com/rjz/ts-mustache/issues/8}
    *  @see {@link https://github.com/janl/mustache.js?tab=readme-ov-file#functions}
