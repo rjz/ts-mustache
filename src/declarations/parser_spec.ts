@@ -11,7 +11,7 @@ function parse(template: string) {
 
 describe('Parser', function () {
   describe('SECTIONs', function () {
-    it('an empty section is still resolved as a SECTION', function () {
+    it('resolves an empty section as a SECTION', function () {
       const parser = parse('{{#foo}}nothing to see here{{/foo}}')
       expect(parser.getNode('test_foo').type).toEqual('SECTION')
     })
