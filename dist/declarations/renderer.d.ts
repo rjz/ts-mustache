@@ -1,11 +1,12 @@
 import { ParserNode, TemplateNode } from './types';
 import { Parser } from './parser';
+/**
+ *  Types referenced in generated type definitions.
+ */
 export declare const utilityTypes: {
     /**
      *  We can't infer type from an untyped template, but we can allow the full
      *  range of valid mustache values
-     *
-     *  @todo support lambdas (`function` values)
      */
     VALUE: string;
     /**
@@ -14,8 +15,23 @@ export declare const utilityTypes: {
      */
     RECORD: string;
     /**
+     *  @todo type the `render()` method in terms of the section type `T`
+     */
+    SECTION_LAMBDA: string;
+    SECTION_OPTIONAL: string;
+    /**
      *  A `SECTION` (inverted or otherwise)'s properties are nullable and may or
-     *  may not be list types
+     *  may not be list types.
+     *
+     *  Note that mustache.js@4.2.0 (the current version at time of writing)
+     *  interprets the official spec to require lambdas used as section arguments
+     *  to _return_ a rendering function (i.e., they will be first invoked as an
+     *  "empty" lambda, ala a `MustacheValue`) rather than implementing it
+     *  themselves directly.
+     *
+     *  @see {@link https://github.com/rjz/ts-mustache/issues/8}
+     *  @see {@link https://github.com/janl/mustache.js?tab=readme-ov-file#functions}
+     *  @see {@link https://github.com/mustache/spec/blob/master/specs/~lambdas.yml}
      */
     SECTION: string;
 };
@@ -41,7 +57,7 @@ export type ResolutionMap = Map<ParserNode['id'], Resolution>;
 export declare class Renderer {
     protected parsed: Parser;
     protected resolutions: ResolutionMap;
-    protected utilityTypesUsed: Set<"VALUE" | "RECORD" | "SECTION">;
+    protected utilityTypesUsed: Set<"VALUE" | "RECORD" | "SECTION" | "SECTION_LAMBDA" | "SECTION_OPTIONAL">;
     constructor(parsed: Parser);
     protected addCandidate(resolution: Resolution, propertyKey: string, candidate: ResolutionCandidate): void;
     protected resolveNode(id: ParserNode['id'], ns: string, children: Set<ParserNode>): void;

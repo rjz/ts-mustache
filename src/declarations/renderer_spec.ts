@@ -79,6 +79,17 @@ describe('Parser', function () {
       })
     })
 
+    it('treats empty sections as SECTIONs', function () {
+      const template = '{{#lambda}}nothing to see here but content{{/lambda}}'
+
+      const w = TestWriter.resolve({ template })
+      const templateResolution = w.findTypeName('Template')
+
+      expect(templateResolution.candidates).toEqual({
+        lambda: [{ type: 'OPTIONAL' }],
+      })
+    })
+
     it('resolves conflicting hints', function () {
       const template = `
         {{^users.length}}no users{{/users.length}}

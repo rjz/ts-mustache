@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Parser full tests handles nested properties 1`] = `
-"type MustacheValue = string | number | boolean
+"type MustacheValue = string | number | boolean | (() => MustacheValue)
 
 type MustacheRecord<T> = T
 
@@ -25,11 +25,20 @@ export const TEMPLATES = [
 `;
 
 exports[`Parser full tests handles nested properties in sections 1`] = `
-"type MustacheValue = string | number | boolean
+"type MustacheValue = string | number | boolean | (() => MustacheValue)
 
 type MustacheRecord<T> = T
 
-type MustacheSection<T> = T[] | T
+/**
+ *  Placeholder for evaluating a lambda invoked as a Section value.
+ *
+ *  @see {@link https://github.com/mustache/spec/blob/master/specs/~lambdas.yml}
+ */
+interface MustacheSectionLambda<T> {
+  (template: string, render: (...args: any[]) => string): string
+}
+
+type MustacheSection<T> = T[] | T | (() => MustacheSectionLambda<T>)
 
 interface Test {
   foo: MustacheRecord<TestFoo>
@@ -55,9 +64,18 @@ export const TEMPLATES = [
 `;
 
 exports[`Parser full tests works 1`] = `
-"type MustacheValue = string | number | boolean
+"type MustacheValue = string | number | boolean | (() => MustacheValue)
 
-type MustacheSection<T> = T[] | T
+/**
+ *  Placeholder for evaluating a lambda invoked as a Section value.
+ *
+ *  @see {@link https://github.com/mustache/spec/blob/master/specs/~lambdas.yml}
+ */
+interface MustacheSectionLambda<T> {
+  (template: string, render: (...args: any[]) => string): string
+}
+
+type MustacheSection<T> = T[] | T | (() => MustacheSectionLambda<T>)
 
 interface _person {
   name: MustacheValue

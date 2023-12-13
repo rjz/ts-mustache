@@ -73,4 +73,31 @@ describe('"end-to-end" tests', function () {
       expect(actual).toMatchSnapshot()
     })
   })
+
+  describe('lambdas', function () {
+    it('allows lambdas in values', function () {
+      const p = new Parser()
+      p.addTemplate('test', mustache.parse('{{any}}'))
+
+      const t = new Renderer(p)
+      const actual = t.toString()
+
+      expect(actual).toMatch(
+        /type MustacheValue =.*\| \(\(\) => MustacheValue\)/,
+      )
+    })
+
+    it('supports lambdas in sections', function () {
+      const p = new Parser()
+      p.addTemplate(
+        'test',
+        mustache.parse(`{{#parseChildren}}Hello, {{name}}{{/parseChildren}}`),
+      )
+
+      const t = new Renderer(p)
+      const actual = t.toString()
+
+      expect(actual).toMatch(/MustacheSectionLambda/)
+    })
+  })
 })
